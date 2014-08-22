@@ -88,10 +88,12 @@ snippet cdacc "CoreData Accessors Implementation"
 endsnippet
 
 snippet delegate "Delegate Responds to Selector"
-if([${1:[self delegate]} respondsToSelector:@selector(${2:selfDidSomething:})])
-	[$1 ${3:${2/((^\s*([A-Za-z0-9_]*:)\s*)|(:\s*$)|(:\s*))/(?2:$2self :\:<>)(?4::)(?5: :)/g}}];
-
+if([${1:self.delegate} respondsToSelector:@selector(${2:selfDidSomething:})]){
+    [$1 ${3:$2}];
+}
 endsnippet
+#wtf is this
+#[$1 ${3:${2/((^\s*([A-Za-z0-9_]*:)\s*)|(:\s*$)|(:\s*))/(?2:$2self :\:<>)(?4::)(?5: :)/g}}];
 
 snippet thread "Detach New NSThread"
 [NSThread detachNewThreadSelector:@selector(${1:method}:) toTarget:${2:aTarget} withObject:${3:anArgument}]
@@ -269,4 +271,464 @@ snippet setprefs "Write to defaults (setprefs)"
 [[NSUserDefaults standardUserDefaults] setObject:${1:object} forKey:${2:key}];
 endsnippet
 
+snippet objacc "Object Accessors Interface (objacc)"
+- (${1:id})${2:thing};
+- (void)set${2/./\u$0/}:($1)aValue;
+endsnippet
+
+snippet prop "Property"
+@property (${1/^(e)$|.*/(?1:r)/}${1:r}${1/^(?:(r)|(e)|(c)|(a))$|.*/(?1:etain)(?2:adonly)(?3:opy)(?4:ssign)/}) ${2:NSSomeClass}$ *${3:${2/^[A-Z](?:[A-Z]+|[a-z]+)([A-Z]\w*)/\l$1/}};
+endsnippet
+
+snippet getprefs "Read from defaults (getprefs)"
+[[NSUserDefaults standardUserDefaults] objectForKey:${1:key}];
+endsnippet
+
+snippet responds "Responds to Selector"
+if ([${1:self} respondsToSelector:@selector(${2:someSelector:})])
+{
+    [$1 ${3:${2/((:\s*$)|(:\s*))/:<>(?3: )/g}}];
+}
+endsnippet
+
+snippet gsave "Save and Restore Graphics Context (gsave)"
+[NSGraphicsContext saveGraphicsState];
+$0
+[NSGraphicsContext restoreGraphicsState];
+
+endsnippet
+#
+#snippet acc "Scalar Accessors (acc)"
+#- (${1:unsigned int})${2:thing}
+#{
+#	return ${3:$2};
+#}
+#
+#- (void)set${2/./\u$0/}:(${1:unsigned int})new${2/./\u$0/}
+#{
+#	$3 = new${2/./\u$0/};
+#}
+#endsnippet
+#
+#snippet acc "Scalar Accessors Interface (acc)"
+#- (${1:unsigned int})${2:thing};
+#- (void)set${2/./\u$0/}:($1)new${2/./\u$0/};
+#endsnippet
+
+snippet stracc "String Accessors (stracc)"
+- (NSString *)${1:thing}
+{
+	return ${2:$1};
+}
+
+- (void)set${1/.*/\u$0/}:(NSString *)/})${3:a${1/.*/\u$0/}}
+{
+	$3 = [$3 copy];
+	[$2 release];
+	$2 = $3;
+}
+endsnippet
+
+snippet syn "Synthesize"
+@synthesize ${1:property};
+endsnippet
+
+snippet setprefs "Write to defaults (setprefs)"
+[[NSUserDefaults standardUserDefaults] setObject:${1:object} forKey:${2:key}];
+endsnippet
+
+snippet @ps "Strong property"
+@property (strong, nonatomic) 
+endsnippet
+
+snippet @pa "Assign property"
+@property (assign, nonatomic) 
+endsnippet
+
+snippet @pw "Weak property"
+@property (weak, nonatomic) 
+endsnippet
+
+snippet @pr "Readonly property"
+@property (readonly, nonatomic) 
+endsnippet
+
+snippet main_queue "Main queue"
+dispatch_async(dispatch_get_main_queue(), ^{
+    $1
+});
+endsnippet
+
+snippet dispatch_after "Dispatch after"
+dispatch_after(dispatch_time(DISPATCH_TIME_NOW, $1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void){
+});
+endsnippet
+
+snippet comp "Completion with errors"
+$1(void (^)(NSError *error, AFHTTPRequestOperation *operation, id rawData))completion$3
+endsnippet
+
+snippet compc "Completion call"
+$1^(NSError *error, AFHTTPRequestOperation *operation, id rawData){
+    $3
+}
+endsnippet
+
+snippet alert "Alert"
+UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"$1" 
+                                                message:@"$2" 
+                                                delegate:nil 
+                                                cancelButtonTitle:nil 
+                                                otherButtonTitles:@"Ok", 
+                                                nil];
+[alert show];
+endsnippet
+
+snippet unimp "Unimplemented error"
+//TODO
+NSAssert(false, @"Unimplemented");
+endsnippet
+
+snippet env "Environment"
+[HEEnv env][@"$1"]$2
+endsnippet
+
+snippet acc "Object Accessors (objacc)"
+- (${1:id})${2:thing}
+{
+	return _$2;
+}
+
+- (void)set${2/./\u$0/}:($1)$2
+{
+	_$2 = $2;
+}
+endsnippet
+
+snippet set "Object Accessors (objacc)"
+- (void)set$1:($2)${1/./\l$0/}
+{
+	_${1/./\l$0/} = ${1/./\l$0/};
+}
+endsnippet
+
+snippet tableView "TableView methods"
+//    [self registerNib:[UINib nibWithNibName:@"$1Cell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"$1Cell"];
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 44.0f;
+}
+
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+
+//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    $1Cell * cell = [tableView dequeueReusableCellWithIdentifier:@"$1Cell" forIndexPath:indexPath];
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+}
+endsnippet
+
+snippet tableView "Cell methods"
+[self registerNib:[UINib nibWithNibName:@"$2" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"$2"];
+$1 * cell = [tableView dequeueReusableCellWithIdentifier:@"${2:$1}" forIndexPath:indexPath];
+endsnippet
+
+snippet collectionView "All CollectionView methods"
+#pragma mark - Collectionview
+- (void)setupCollectionView
+{
+    self.collectionView.dataSource = self;
+    self.collectionView.delegate = self;
+	self.collectionView.backgroundColor = [UIColor clearColor];
+    [self.collectionView registerNib:[UINib nibWithNibName:@"$1" bundle:[NSBundle mainBundle]] forCellWithReuseIdentifier:@"${2:$1}"];
+}
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+    return 1;
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return 0;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    ${3:$1} *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:@"${4:$1}" forIndexPath:indexPath];
+    return cell;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+}
+endsnippet
+
+snippet collectionView "CollectionView:Register Nib"
+[self.collectionView registerNib:[UINib nibWithNibName:@"$1" bundle:[NSBundle mainBundle]] forCellWithReuseIdentifier:@"${2:$1}"];
+endsnippet
+
+snippet collectionView "CollectionView:Flow Layout"
+UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
+flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+flowLayout.minimumInteritemSpacing = 0.0f;
+flowLayout.minimumLineSpacing = 0.0f;
+flowLayout.itemSize = self.view.frame.size;
+self.collectionView.collectionViewLayout = flowLayout;
+endsnippet
+
+snippet collectionView "CollectionView:Header Methods"
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+    if (kind == UICollectionElementKindSectionHeader){
+		$1 * h = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"$1" forIndexPath:indexPath];
+		return h;
+	}
+
+	return nil;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
+{
+	return CGSizeMake(0,0);
+}
+endsnippet
+
+snippet collectionView "CollectionView:Supplementary view"
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+	if([kind isEqual:${1:UICollectionElementKindSectionHeader}]){
+		UICollectionReusableView * v = [collectionView dequeueReusableSupplementaryViewOfKind:$1 withReuseIdentifier:@"$2" forIndexPath:indexPath];
+		$3
+	}
+}
+endsnippet
+
+snippet collectionView "CollectionView:Register supplementary view"
+[self.collectionView registerNib:[UINib nibWithNibName:@"$1" bundle:[NSBundle mainBundle]]
+      forSupplementaryViewOfKind:${3:UICollectionElementKindSectionHeader} 
+             withReuseIdentifier:@"${2:$1}"];
+endsnippet
+
+snippet collectionView "CollectionView:Item size (flow layout)"
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+}
+endsnippet
+
+snippet nib "Load nib with name"
+(id)[[[NSBundle mainBundle] loadNibNamed:@"$1" owner:self options:nil] firstObject];
+endsnippet
+
+snippet nibd "Load nib with name"
+$1 * v = (id)[[[NSBundle mainBundle] loadNibNamed:@"${2:$1}" owner:self options:nil] firstObject];
+endsnippet
+
+snippet nibc "Load nib for controller"
+$1 * c = [[$1 alloc] initWithNibName:@"${2:$1}" bundle:[NSBundle mainBundle]];
+endsnippet
+
+snippet addT "Add target to button"
+addTarget:self action:@selector($1) forControlEvents:UIControlEventTouchUpInside];
+endsnippet
+
+snippet setT "set title for button"
+setTitle:@"$1" forState:UIControlStateNormal];
+endsnippet
+
+snippet not "Register for Notification"
+[[NSNotificationCenter defaultCenter] addObserver:${1:self} selector:@selector(${3:${2/^([A-Z]{2})?(.+?)(Notification)?$/\l$2/}}:) name:${2:NSWindowDidBecomeMainNotification} object:${4:nil}];
+endsnippet
+
+snippet not "Post notification"
+[[NSNotificationCenter defaultCenter] postNotificationName:$1 object:${3:nil} userInfo:${2:nil}];
+endsnippet
+
+snippet not "Remove notificaitons"
+[[NSNotificationCenter defaultCenter] removeObserver:self];
+endsnippet
+
+snippet scrollView "ScrollView:DidScroll"
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    $1
+}
+endsnippet
+
+snippet scrollView "ScrollView:DidEndDecelerating"
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    $1
+}
+endsnippet
+
+snippet scrollView "ScrollView:DidEndDragging"
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    $1
+}
+endsnippet
+
+snippet scrollView "ScrollView:WillEndDragging"
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
+                     withVelocity:(CGPoint)velocity
+		      targetContentOffset:(inout CGPoint *)targetContentOffset 
+{
+    $1
+}
+endsnippet
+
+snippet scrollView "ScrollView:DidEndAnimations"
+- (void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
+{
+    $1
+}
+endsnippet
+
+snippet scrollView "ScrollView:willBeginDragging"
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    $1
+}
+endsnippet
+
+snippet ani "AnimateWithDuration"
+[UIView animateWithDuration:$1 delay:${2:0.0} options:${3:0} animations:^{
+    $4
+} completion:^(BOOL finished){$5}];
+endsnippet
+
+snippet ani "AnimateWithDuration:Spring"
+[UIView animateWithDuration:$1 delay:${2:0.0} usingSpringWithDamping:${3:0.1} initialSpringVelocity:${4:1.5}  options:${5:0} animations:^{
+    $6
+} completion:^(BOOL finished){$7}];
+endsnippet
+
+snippet ani "AnimateKeyFrames"
+[UIView animateKeyframesWithDuration:$1 delay:${2:0.0} options:0 animations:^{
+	[UIView addKeyframeWithRelativeStartTime:0.0 relativeDuration:0.0 animations:^{
+			$4
+	}];
+} completion:^(BOOL finished){}];
+endsnippet
+
+snippet cornerRadius "Rounded Corners"
+self.layer.cornerRadius = $1;
+self.clipsToBounds = YES;
+endsnippet
+
+snippet protocol "Protocol methods"
+@protocol $1Delegate <NSObject>
+@end
+@property (weak, nonatomic) id<$1Delegate> delegate;
+endsnippet
+
+snippet gesture "Tap gesture recognizer"
+UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(${1:handleTapFrom:})];
+[self.view addGestureRecognizer:tap];
+
+- (void) $1(UIGestureRecognizer *)recognizer
+{
+}
+endsnippet
+
+snippet gesture "Swipe gesture recognizer"
+UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(${1:handleSwipeFrom:})];
+[swipe setDirection:(UISwipeGestureRecognizerDirectionRight | UISwipeGestureRecognizerDirectionDown | UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionUp)];
+[self.view addGestureRecognizer:swipe];
+
+- (void) $1(UISwipeGestureRecognizer *)recognizer
+{
+}
+endsnippet
+
+snippet config "Config constant"
+#define k$1Default $2
+#define k$1 ([kEnv[@"$3"] ${4:intValue}])
+endsnippet
+
+snippet statusBar "Light status bar"
+-(UIStatusBarStyle)preferredStatusBarStyle{ 
+    return UIStatusBarStyleLightContent; 
+}
+endsnippet
+
+snippet statusBar "Hide status bar"
+- (BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
+endsnippet
+
+snippet textField "Text field should*"
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField
+- (BOOL)textFieldShouldClear:(UITextField *)textField
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+endsnippet
+
+snippet textField "Text field did*"
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+- (void)textFieldDidEndEditing:(UITextField *)textField
+endsnippet
+
+snippet white
+[UIColor whiteColor]
+endsnippet
+
+snippet clear
+[UIColor clearColor]
+endsnippet
+
+snippet timer
+[NSTimer scheduledTimerWithTimeInterval:${1:1.0} block:^{
+$3
+} repeats:${2:NO}];
+endsnippet
+
+snippet track
+    [[QTAnalytics sharedInstance] eventOcurred:@"$1" 
+								withProperties:@{@"$2":$3, 
+								}];
+endsnippet
+
+snippet nwc
+[HEUtils numberWithCommas:NSI($1)]
+endsnippet
+
+snippet mark
+#pragma mark - $1
+endsnippet
+
+snippet refreshControl
+@property (strong, nonatomic) UIRefreshControl * refreshControl;
+
+self.refreshControl = [[UIRefreshControl alloc] init];
+[self.refreshControl addTarget:self action:@selector(${1:fetchData}) forControlEvents:UIControlEventValueChanged];
+[self.${2:tableView} addSubview:self.refreshControl];
+endsnippet
+
+snippet barButton "Bar Button Image"
+UIBarButtonItem *$1=[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"$2"]
+															   style:UIBarButtonItemStylePlain
+															  target:self 
+															  action:@selector($3)];
+self.navigationItem.leftBarButtonItems = @[$1];
+endsnippet
 # vim:ft=snippets:

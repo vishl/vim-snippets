@@ -159,4 +159,57 @@ snippet req "require an AMD module"
 require([${1:'dependencies'}], ${2:callback});
 endsnippet
 
+snippet View "Parse View"
+App.Views.$1 = Parse.View.extend({
+  initialize:function(){
+    _.bindAll(this, 'render');
+    this.template = _.template($("#${2:${1/[A-Z]/\l$0/g}-template}").html());
+  },
+
+  render:function(){
+    this.$el.html(this.template(${3:{model:this.model.toJSON()}}));
+
+    this.delegateEvents();
+  },
+
+});
+endsnippet
+
+snippet Cloud "Parse Cloud Function Definition"
+Parse.Cloud.define("$1", function(request,response){
+  $2
+  var functions = [];
+  callNext(functions);
+});
+endsnippet
+
+snippet Cloud "Parse Cloud Function Invocation"
+Parse.Cloud.run('$1', {$2}, {
+  success:function(result){
+  },
+  error:function(error){
+  }
+});
+endsnippet
+
+snippet Cloud "Parse Cloud Before Save"
+Parse.Cloud.beforeSave("$1", function(request, response) {
+  $2
+  response.success();
+});
+endsnippet
+
+snippet query
+var q = new Parse.Query("$1");
+q.equalTo("$2", $3);
+q.find({
+  useMasterKey:true,
+  success:function(results){
+	$4
+  },
+  error:function(){
+	response.error("Server error");
+  },
+});
+endsnippet
 # vim:ft=snippets:
