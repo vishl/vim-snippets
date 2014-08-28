@@ -532,6 +532,13 @@ snippet collectionView "CollectionView:Item size (flow layout)"
 }
 endsnippet
 
+snippet collectionView "CollectionView:Section Inset (flow layout)"
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+{
+    return (UIEdgeInsets){.top=${1:0}, .bottom=${2:0}, .left=${3:0}, .right=${4:0}};
+}
+endsnippet
+
 snippet nib "Load nib with name"
 (id)[[[NSBundle mainBundle] loadNibNamed:@"$1" owner:self options:nil] firstObject];
 endsnippet
@@ -562,6 +569,12 @@ endsnippet
 
 snippet not "Remove notificaitons"
 [[NSNotificationCenter defaultCenter] removeObserver:self];
+endsnippet
+
+snippet not "dealloc + Remove notificaitons"
+- (void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 endsnippet
 
 snippet scrollView "ScrollView:DidScroll"
@@ -634,6 +647,7 @@ self.clipsToBounds = YES;
 endsnippet
 
 snippet protocol "Protocol methods"
+@class $1;
 @protocol $1Delegate <NSObject>
 @end
 @property (weak, nonatomic) id<$1Delegate> delegate;
@@ -730,5 +744,71 @@ UIBarButtonItem *$1=[[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"
 															  target:self 
 															  action:@selector($3)];
 self.navigationItem.leftBarButtonItems = @[$1];
+endsnippet
+
+snippet barButton "Bar Button Text"
+UIBarButtonItem *$1=[[UIBarButtonItem alloc]initWithTitle:@"$2"
+															   style:UIBarButtonItemStylePlain
+															  target:self 
+															  action:@selector($3)];
+self.navigationItem.leftBarButtonItems = @[$1];
+endsnippet
+
+
+snippet keyboard "Resize view for keyboard"
+#pragma mark - Keyboard
+- (void)setupKeyboard
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];;
+}
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+    [self adjustForKeyboard:YES keyboardInfo:[notification userInfo]];
+}
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    [self adjustForKeyboard:NO keyboardInfo:[notification userInfo]];
+}
+
+- (void)adjustForKeyboard:(BOOL)showKeyboard keyboardInfo:(NSDictionary *)info
+{
+    // transform the UIViewAnimationCurve to a UIViewAnimationOptions mask
+    UIViewAnimationCurve animationCurve = [info[UIKeyboardAnimationCurveUserInfoKey] unsignedIntegerValue];
+    UIViewAnimationOptions animationOptions = UIViewAnimationOptionBeginFromCurrentState;
+    if (animationCurve == UIViewAnimationCurveEaseIn) {
+        animationOptions |= UIViewAnimationOptionCurveEaseIn;
+    }
+    else if (animationCurve == UIViewAnimationCurveEaseInOut) {
+        animationOptions |= UIViewAnimationOptionCurveEaseInOut;
+    }
+    else if (animationCurve == UIViewAnimationCurveEaseOut) {
+        animationOptions |= UIViewAnimationOptionCurveEaseOut;
+    }
+    else if (animationCurve == UIViewAnimationCurveLinear) {
+        animationOptions |= UIViewAnimationOptionCurveLinear;
+    }
+    
+    if (showKeyboard) {
+        UIInterfaceOrientation orientation = self.interfaceOrientation;
+        BOOL isPortrait = UIDeviceOrientationIsPortrait(orientation);
+        
+        NSValue *keyboardFrameVal = [info objectForKey:UIKeyboardFrameEndUserInfoKey];
+        CGRect keyboardFrame = [keyboardFrameVal CGRectValue];
+        CGFloat height = isPortrait ? keyboardFrame.size.height : keyboardFrame.size.width;
+        
+        // adjust the constraint constant to include the keyboard's height
+        self.bottomConstraint.constant = height;
+    }
+    else {
+        self.bottomConstraint.constant = 0;
+    }
+
+    NSTimeInterval animationDuration = [[info objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+
+    [UIView animateWithDuration:animationDuration delay:0 options:animationOptions animations:^{
+        [self.view layoutIfNeeded];
+    } completion:nil];
+}
 endsnippet
 # vim:ft=snippets:
