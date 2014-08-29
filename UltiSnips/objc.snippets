@@ -811,4 +811,18 @@ snippet keyboard "Resize view for keyboard"
     } completion:nil];
 }
 endsnippet
+
+snippet HUD "Show HUD"
+MBProgressHUD * hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+hud.mode = MBProgressHUDModeIndeterminate;
+hud.labelText = @"$1";
+endsnippet
+
+snippet HUD "Hide HUD"
+[MBProgressHUD hideHUDForView:self.view animated:YES];
+endsnippet
+
+snippet HUD "Import HUD"
+#import <MBProgressHUD/MBProgressHUD.h>
+endsnippet
 # vim:ft=snippets:
