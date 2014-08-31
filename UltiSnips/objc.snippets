@@ -825,4 +825,26 @@ endsnippet
 snippet HUD "Import HUD"
 #import <MBProgressHUD/MBProgressHUD.h>
 endsnippet
+
+#parse stuff
+snippet parse "Parse Cloud function"
+    [PFCloud callFunctionInBackground:@"$1"
+                       withParameters:@{$2} 
+                                block:^(NSDictionary *result, NSError *error) {
+                                          if(error){
+                                              UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" 
+                                                                                              message:@"Network error" 
+                                                                                              delegate:nil 
+                                                                                              cancelButtonTitle:nil 
+                                                                                              otherButtonTitles:@"Ok", 
+                                                                                              nil];
+                                              [alert show];
+                                          }else{
+										      $3
+                                          }
+                                      }];
+endsnippet
+
+
+
 # vim:ft=snippets:
