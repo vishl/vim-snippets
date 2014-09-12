@@ -370,7 +370,11 @@ endsnippet
 
 snippet compc "Completion call"
 $1^(NSError *error, AFHTTPRequestOperation *operation, id rawData){
-    $3
+    if(error){
+        [HEUtils handleError:error operation:operation allowDisplay:YES];
+    }else{
+        $3
+    }
 }
 endsnippet
 
@@ -510,15 +514,6 @@ snippet collectionView "CollectionView:Header Methods"
 }
 endsnippet
 
-snippet collectionView "CollectionView:Supplementary view"
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
-{
-	if([kind isEqual:${1:UICollectionElementKindSectionHeader}]){
-		UICollectionReusableView * v = [collectionView dequeueReusableSupplementaryViewOfKind:$1 withReuseIdentifier:@"$2" forIndexPath:indexPath];
-		$3
-	}
-}
-endsnippet
 
 snippet collectionView "CollectionView:Register supplementary view"
 [self.collectionView registerNib:[UINib nibWithNibName:@"$1" bundle:[NSBundle mainBundle]]
@@ -846,5 +841,13 @@ snippet parse "Parse Cloud function"
 endsnippet
 
 
+snippet controller "View Controller from Nib"
+$1* ${2:c} = [[$1 alloc] initWithNibName:@"$1" bundle: [NSBundle mainBundle] ];
+endsnippet
+
+snippet weakSelf "Weak self"
+__weak __typeof(self)weakSelf = self;
+	__strong __typeof(weakSelf)strongSelf = weakSelf;
+endsnippet
 
 # vim:ft=snippets:
