@@ -354,8 +354,13 @@ snippet @pr "Readonly property"
 endsnippet
 
 snippet main_queue "Main queue"
+__weak __typeof(self)weakSelf = self;
 dispatch_async(dispatch_get_main_queue(), ^{
-    $1
+    __strong __typeof(weakSelf)strongSelf = weakSelf;
+    if(strongSelf){
+        $1
+    }
+    
 });
 endsnippet
 
@@ -373,7 +378,10 @@ $1^(NSError *error, AFHTTPRequestOperation *operation, id rawData){
     if(error){
         [HEUtils handleError:error operation:operation allowDisplay:YES];
     }else{
-        $3
+        __strong __typeof(weakSelf)strongSelf = weakSelf;
+        if(strongSelf){
+            $3
+        }
     }
 }
 endsnippet
@@ -481,6 +489,11 @@ snippet collectionView "All CollectionView methods"
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return CGSizeMake(collectionView.frame.size.width, 50.0f);
 }
 endsnippet
 
@@ -712,9 +725,21 @@ $3
 endsnippet
 
 snippet track
-    [[QTAnalytics sharedInstance] eventOcurred:@"$1" 
-								withProperties:@{@"$2":$3, 
-								}];
+[[QTAnalytics sharedInstance] eventOcurred:@"$1" 
+                            withProperties:@{@"$2":$3, 
+                            }];
+endsnippet
+
+snippet trackAppeared
+- (void)viewDidAppear:(BOOL)animated
+{
+    [[QTAnalytics sharedInstance] viewAppeared:@"$1"];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [[QTAnalytics sharedInstance] viewDisappearedWithProperties:nil];
+}
 endsnippet
 
 snippet nwc
@@ -845,9 +870,77 @@ snippet controller "View Controller from Nib"
 $1* ${2:c} = [[$1 alloc] initWithNibName:@"$1" bundle: [NSBundle mainBundle] ];
 endsnippet
 
+snippet wS "Weak self"
+__weak __typeof(self)weakSelf = self;
+endsnippet
+
+snippet sS "Strong self"
+__strong __typeof(weakSelf)strongSelf = weakSelf;
+if(strongSelf){
+    $1
+}
+endsnippet
+
+
+
 snippet weakSelf "Weak self"
 __weak __typeof(self)weakSelf = self;
     __strong __typeof(weakSelf)strongSelf = weakSelf;
+    if(strongSelf){
+    }
 endsnippet
+
+snippet singleton "Singleton"
++($1 *) ${2:sharedInstance}
+{
+    static $1 * instance;
+    if(!instance){
+        instance = [[$1 alloc] init];
+    }
+    
+    return instance;
+}
+endsnippet
+
+snippet lazy "Lazy instantiation"
+- (${1:Class} *)${2:var}
+{
+    if(!_$2){
+        _$2 = [[$1 alloc] init];
+    }
+    return _$2;
+}
+endsnippet
+
+snippet block "Local Var"
+${1:void} (^${2:varName})(${3:parameterTypes}) = ^$1(${4:parameters}) {
+    $4
+};
+endsnippet
+
+snippet block "Property"
+@property (nonatomic, copy) ${1:void} (^$2)($3);
+endsnippet
+
+snippet block "Parameter"
+(${1:void} (^)(${2:parameters}))${3:name}
+endsnippet
+
+snippet block "Argument"
+^${1:void} ($2) {
+$3
+}
+endsnippet
+
+snippet block "Typedef"
+typedef ${1:void} (^${2:TypeName})($3);
+endsnippet
+
+snippet block "Typedef instantiation"
+${1:TypeName} ${2:varName} = ^${3:void}($4) {
+$5
+};
+endsnippet
+
 
 # vim:ft=snippets et: 
