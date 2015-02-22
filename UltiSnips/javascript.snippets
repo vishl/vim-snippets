@@ -171,6 +171,10 @@ snippet req "require an AMD module"
 require([${1:'dependencies'}], ${2:callback});
 endsnippet
 
+snippet globals
+/*globals App, Backbone, _, JST, Utils*/
+endsnippet
+
 snippet View "Parse View"
 App.Views.$1 = Parse.View.extend({
   initialize:function(){
@@ -184,6 +188,25 @@ App.Views.$1 = Parse.View.extend({
     this.delegateEvents();
   },
 
+});
+endsnippet
+
+snippet View "Backbone View"
+App.Views.$1 = Backbone.View.extend({
+  _className : "$1",
+  events:{
+  },
+
+  initialize:function(){
+    this.listenTo(this.model, 'sync', this.render);
+    this.model.fetch();
+  },
+
+  render:function(){
+    this.$el.html(JST['backbone/templates/$2']({model:this.model}));
+
+    this.delegateEvents();
+  },
 });
 endsnippet
 
