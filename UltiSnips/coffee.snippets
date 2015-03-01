@@ -94,3 +94,36 @@ endsnippet
 snippet log "Log" b
 console.log ${1:"${2:msg}"}
 endsnippet
+
+snippet View "Backbone view"
+class App.Views.$1 extends Backbone.View
+    _className: "$1"
+    events:${2:null}
+    
+    initialize: ->
+
+    render: ->
+      @$el.html JST['backbone/templates/${2:${1/\./\//}}'](model:@model)
+      @populateChildren()
+      @delegateEvents()
+endsnippet
+
+snippet Model "Backbone model"
+class App.Models.$1 extends Backbone.Model
+  _className : '$1'
+
+  autoParseKeys: ->
+    [
+    ]
+
+  parse:(data)->
+    data = super
+    return data
+	
+
+  urlRoot:"api/${2:${1/./\l$0/g}}"
+
+  defaultArguments:->
+
+  initialize: (attributes, options)->
+endsnippet

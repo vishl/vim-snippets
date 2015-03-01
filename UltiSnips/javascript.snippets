@@ -234,6 +234,28 @@ Parse.Cloud.beforeSave("$1", function(request, response) {
 });
 endsnippet
 
+snippet Model "Backbone Model"
+App.Models.$1 = Backbone.Model.extend({
+  _className : '$1',
+  autoParseKeys:function(){
+    return [
+    ];
+  },
+  parse:function(data){
+    data = Backbone.Model.prototype.parse.apply(this,arguments);
+    return data;
+  },
+  url:function(){
+    return "/api/";
+  },
+});
+
+App.Collections.$1Collection = Backbone.Collection.extend({
+  _className : '$1Collection',
+  model : App.Models.$1,
+});
+endsnippet
+
 snippet query
 var q = new Parse.Query("$1");
 q.equalTo("$2", $3);
