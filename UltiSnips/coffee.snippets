@@ -97,15 +97,16 @@ endsnippet
 
 snippet View "Backbone view"
 class App.Views.$1 extends Backbone.View
-    _className: "$1"
-    events:${2:null}
-    
-    initialize: ->
+  _className: "$1"
+  events:${2:null}
+  
+  initialize: (options)->
+    @listenTo(@model, 'sync', @render)
 
-    render: ->
-      @$el.html JST['backbone/templates/${2:${1/\./\//}}'](model:@model)
-      @populateChildren()
-      @delegateEvents()
+  render: ->
+    @$el.html JST['backbone/templates/${2:${1/\./\//}}'](model:@model)
+    @populateChildren()
+    @delegateEvents()
 endsnippet
 
 snippet Model "Backbone model"
@@ -121,9 +122,20 @@ class App.Models.$1 extends Backbone.Model
     return data
 	
 
-  urlRoot:"api/${2:${1/./\l$0/g}}"
+  urlRoot:"/api/${2:${1/./\l$0/g}s}"
 
   defaultArguments:->
 
   initialize: (attributes, options)->
+
+class App.Collections.$1s extends Backbone.Collection
+  _className : '$1s'
+  model:App.Models.$1
+  url:"/api/$2"
+  defaultArguments:->
+    limit:5
+    offset:@length
+  
+  initialize: (model, options={})->
+
 endsnippet
