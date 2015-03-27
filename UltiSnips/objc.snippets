@@ -832,6 +832,92 @@ snippet keyboard "Resize view for keyboard"
 }
 endsnippet
 
+snippet keyboard "Keyboard Accessory View"
+#pragma mark - Keyboard
+//put these at the top
+@property (strong, nonatomic) QTKeyboardAccessoryDoneNext * kbAccessoryView;
+@property (strong, nonatomic) NSArray * textFields;
+@property (strong, nonatomic) UITextField * currentTextField;
+
+- (void)setupKb
+{
+    self.kbAccessoryView = NIB(@"QTKeyboardAccessoryDoneNext");
+    [self.kbAccessoryView.doneButton addTarget:self action:@selector(didTapDone) forControlEvents:UIControlEventTouchUpInside];
+    [self.kbAccessoryView.prevButton addTarget:self action:@selector(didTapPrev) forControlEvents:UIControlEventTouchUpInside];
+    [self.kbAccessoryView.nextButton addTarget:self action:@selector(didTapNext) forControlEvents:UIControlEventTouchUpInside];
+
+    self.textFields = @[$1];
+
+    for(UITextField * t in self.textFields){
+        t.inputAccessoryView = self.kbAccessoryView;
+    }
+}
+
+- (void) didTapDone
+{
+    [self.view endEditing:YES];
+}
+
+- (UITextField *)previousTextField:(UITextField*)t
+{
+    NSUInteger index = [self.textFields indexOfObject:t];
+    if(index != NSNotFound){
+        index--;
+        if(index >0){
+            return self.textFields[index];
+        }
+    }
+    return nil;
+}
+
+- (UITextField *)nextTextField:(UITextField *)t
+{
+    NSUInteger index = [self.textFields indexOfObject:t];
+    if(index != NSNotFound){
+        index++;
+        if(index < self.textFields.count){
+            return self.textFields[index];
+        }
+    }
+    return nil;
+}
+
+
+- (void)didTapPrev
+{
+    UITextField * prev = [self previousTextField:self.currentTextField];
+    if(prev){
+        [prev becomeFirstResponder];
+    }
+}
+
+- (void)didTapNext
+{
+    UITextField * next = [self nextTextField:self.currentTextField];
+    if(next){
+        [next becomeFirstResponder];
+    }
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    self.currentTextField = textField;
+    UITextField * next = [self nextTextField:self.currentTextField];
+    UITextField * prev = [self previousTextField:self.currentTextField];
+    if(next){
+        [self.kbAccessoryView enableNext];
+    }else{
+        [self.kbAccessoryView disableNext];
+    }
+    if(prev){
+        [self.kbAccessoryView enableNext];
+    }else{
+        [self.kbAccessoryView disableNext];
+    }
+}
+
+endsnippet
+
 snippet HUD "Show HUD"
 MBProgressHUD * hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 hud.mode = MBProgressHUDModeIndeterminate;

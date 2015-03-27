@@ -16,6 +16,24 @@ snippet %
 <% $1 %>
 endsnippet
 
-snippet = "<%= ${0} %>"
-<%= ${1} %>
+snippet = "<%- ${0} %>"
+<%- ${1} %>
+endsnippet
+
+snippet - "<%- ${0} %>"
+<%- ${1} %>
+endsnippet
+
+snippet each 
+<% _.each($1, function(${2:e}){ %>
+  $3
+<% }); %>
+endsnippet
+
+snippet img
+<img src="<%- $1 %>"$2>
+endsnippet
+
+snippet JST
+<%= JST['backbone/templates/$1']($2) %>
 endsnippet

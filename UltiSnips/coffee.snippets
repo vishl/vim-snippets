@@ -104,7 +104,7 @@ class App.Views.$1 extends Backbone.View
     @listenTo(@model, 'sync', @render)
 
   render: ->
-    @$el.html JST['backbone/templates/${2:${1/\./\//}}'](model:@model)
+    @$el.html JST['backbone/templates/${2:${1/\./\//g}}'](model:@model)
     @populateChildren()
     @delegateEvents()
 endsnippet
@@ -124,7 +124,7 @@ class App.Models.$1 extends Backbone.Model
 
   urlRoot:"/api/${2:${1/./\l$0/g}s}"
 
-  defaultArguments:->
+  defaultArguments:null
 
   initialize: (attributes, options)->
 
@@ -132,9 +132,8 @@ class App.Collections.$1s extends Backbone.Collection
   _className : '$1s'
   model:App.Models.$1
   url:"/api/$2"
-  defaultArguments:->
+  defaultArguments:
     limit:5
-    offset:@length
   
   initialize: (model, options={})->
 

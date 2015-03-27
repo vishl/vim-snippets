@@ -1,6 +1,0 @@
-
-snippet if "if (ERB)"
-<% if ${1:condition} %>$0
-endsnippet
-
-snippet = "<%= ${0} %>"
