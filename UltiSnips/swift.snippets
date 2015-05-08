@@ -1,0 +1,59 @@
+
+snippet track "Track"
+QTAnalytics.sharedInstance().globalTrack("$1", properties:${2:nil})
+
+endsnippet
+
+snippet compc "Completion callback"
+{
+	[weak self]
+	(error:NSError!, operation:AFHTTPRequestOperation!, rawData:AnyObject!) -> Void in
+	if error==nil {
+		$1
+	}else{
+		$2
+	}
+}
+endsnippet
+
+snippet collectionView "All Collection View Methods"
+// MARK: UICollectionViewDataSource
+
+override func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+	return 0
+}
+
+
+override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+	return 0
+}
+
+override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+	let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! UICollectionViewCell
+
+	// Configure the cell
+
+	return cell
+}
+endsnippet
+
+snippet collectionView "Item Size"
+func collectionView(collectionView: UICollectionView,
+					  layout collectionViewLayout: UICollectionViewLayout,
+	  sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize{
+	return CGSizeMake($1, $2);
+}
+endsnippet
+
+
+snippet	clear
+UIColor.clearColor()
+endsnippet
+
+snippet	white
+UIColor.whiteColor()
+endsnippet
+
+snippet nib
+NSBundle.mainBundle().loadNibNamed("$1", owner: self, options: nil)[0] as! ${2:$1}
+endsnippet
