@@ -4,18 +4,6 @@ QTAnalytics.sharedInstance().globalTrack("$1", properties:${2:nil})
 
 endsnippet
 
-snippet compc "Completion callback"
-{
-	[weak self]
-	(error:NSError!, operation:AFHTTPRequestOperation!, rawData:AnyObject!) -> Void in
-	if error==nil {
-		$1
-	}else{
-		$2
-	}
-}
-endsnippet
-
 snippet collectionView "All Collection View Methods"
 // MARK: UICollectionViewDataSource
 
@@ -57,3 +45,45 @@ endsnippet
 snippet nib
 NSBundle.mainBundle().loadNibNamed("$1", owner: self, options: nil)[0] as! ${2:$1}
 endsnippet
+
+snippet bg "Background thread"
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+    $1
+})
+endsnippet
+
+snippet mark 
+// Mark: - $1
+endsnippet
+
+snippet ani "Animate with duration"
+UIView.animateWithDuration(${1:0.25}) {
+	$2
+}
+endsnippet
+
+snippet compc "Completion unowned"
+{ [unowned self] (error:NSError!, operation:AFHTTPRequestOperation!, rawData:AnyObject!) -> Void in
+	if(error == nil){
+		$1
+	}else{
+		HEUtils.handleError(error, operation:operation, allowDisplay:true)
+	}
+}
+endsnippet
+
+snippet compc "Completion weak"
+{ [weak self] (error:NSError!, operation:AFHTTPRequestOperation!, rawData:AnyObject!) -> Void in
+	if let wself = self {
+		if(error == nil){
+			$1
+		}else{
+			HEUtils.handleError(error, operation:operation, allowDisplay:true)
+		}
+	}
+}
+endsnippet
+
+# snippet compd "Define Completion"
+# (error:NSError!, operation:AFHTTPRequestOperation!, rawData:AnyObject!) -> Void
+# endsnippet

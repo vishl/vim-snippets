@@ -256,6 +256,35 @@ App.Collections.$1Collection = Backbone.Collection.extend({
 });
 endsnippet
 
+snippet Model "Backbone Model React"
+var Backbone = require('backbone-sync-fetch');
+var globals = require('../globals');
+
+var $1 = Backbone.Model.extend({
+  _className : '$1',
+  urlRoot: globals.url + "/api/${2:${1/./\l$0/}s}",
+  // autoParseKeys:function(){
+  //   return [
+  //   ];
+  // },
+  // parse:function(data){
+  //   data = Backbone.Model.prototype.parse.apply(this,arguments);
+  //   return data;
+  // },
+});
+
+var $1Collection = Backbone.Collection.extend({
+  _className : '$1Collection',
+  model : $1,
+  urlRoot: globals.url + "/api/${2:${1/./\l$0/}s}",
+});
+
+exports.$1 = $1;
+exports.$1Collection = $1Collection;
+
+
+endsnippet
+
 snippet query
 var q = new Parse.Query("$1");
 q.equalTo("$2", $3);
