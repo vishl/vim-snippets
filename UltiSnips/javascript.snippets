@@ -257,12 +257,12 @@ App.Collections.$1Collection = Backbone.Collection.extend({
 endsnippet
 
 snippet Model "Backbone Model React"
-var Backbone = require('backbone-sync-fetch');
+var Backbone = require('../backbone_extensions');
 var globals = require('../globals');
 
 var $1 = Backbone.Model.extend({
   _className : '$1',
-  urlRoot: globals.url + "/api/${2:${1/./\l$0/}s}",
+  urlRoot: function(){return globals.url + "/api/${2:${1/./\l$0/}s}"; },
   // autoParseKeys:function(){
   //   return [
   //   ];
@@ -276,7 +276,7 @@ var $1 = Backbone.Model.extend({
 var $1Collection = Backbone.Collection.extend({
   _className : '$1Collection',
   model : $1,
-  urlRoot: globals.url + "/api/${2:${1/./\l$0/}s}",
+  url: function(){ return globals.url + "/api/${2:${1/./\l$0/}s}"; },
 });
 
 exports.$1 = $1;
@@ -297,5 +297,98 @@ q.find({
 	response.error("Server error");
   },
 });
+endsnippet
+
+snippet Component "React Component" b
+class $1 extends React.Component {
+  render(){
+    return(
+      <View>
+        $2
+      </View>
+    );
+  }
+}
+endsnippet
+
+snippet Component "React Controller" b
+var OrangePage = require('./orange_page');
+
+class $1 extends React.Component {
+  render(){
+    return(
+      <OrangePage>
+        $2
+      </OrangePage>
+    );
+  }
+}
+
+module.exports = $1
+endsnippet
+
+snippet View "React View"
+<View>
+</View>
+endsnippet
+
+snippet st "React Style"
+style={${1:styles.}}
+endsnippet
+
+snippet T "React Text"
+<GS.QTText>$1</GS.QTText>
+endsnippet
+snippet R "React Text Regular"
+<GS.QTTextR>$1</GS.QTTextR>
+endsnippet
+snippet S "React Text Semibold"
+<GS.QTTextS>$1</GS.QTTextS>
+endsnippet
+snippet < "React Tag"
+<${1:View}>
+  $2
+</$1>
+endsnippet
+snippet <s "React Tag With Style"
+<${1:View}
+  style={$2}>
+  $3
+</$1>
+endsnippet
+snippet img "React Image"
+<Image
+  style={styles.$2}
+  source={{uri:globals.imageHost+$1}}
+  />
+endsnippet
+
+snippet styles "React Styles" b
+var styles = React.StyleSheet.create({
+  $1
+});
+endsnippet
+
+snippet react "React requires"
+'use strict';
+
+var React = require('react-native');
+var GS = require('./globalStyles');
+var globalStyles = GS.styles;
+var colors = GS.colors;
+var Bridge = require('NativeModules').QTReactBridge;
+var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
+var _ = require('underscore');
+var globals = require('./globals');
+var Models = require('./models');
+
+var {
+  Text,
+  View,
+  Image,
+  ListView,
+  TouchableHighlight,
+} = React;
+
 endsnippet
 # vim:ft=snippets:
