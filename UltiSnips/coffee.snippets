@@ -104,7 +104,7 @@ class App.Views.$1 extends Backbone.View
     @listenTo(@model, 'sync', @render)
 
   render: ->
-    @$el.html JST['backbone/templates/${2:${1/\./\//g}}'](model:@model)
+    @$el.html JST['backbone/templates/${3:${1/\./\//g}}'](model:@model)
     @populateChildren()
     @delegateEvents()
 endsnippet
@@ -137,4 +137,19 @@ class App.Collections.$1s extends Backbone.Collection
   
   initialize: (model, options={})->
 
+endsnippet
+
+snippet track "Analystics" 
+App.analytics.track('$1', {$2})
+endsnippet
+
+snippet Modal "Modal View" 
+class App.Views.$1 extends App.Views.Modal
+  _className: "$1"
+  
+  initialize: ->
+    super
+
+  renderInner: (el)->
+    el.html JST['backbone/templates/${2:${1/\./\//g}}'](model:@model)
 endsnippet

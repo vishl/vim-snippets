@@ -37,3 +37,19 @@ endsnippet
 snippet JST
 <%= JST['backbone/templates/$1']($2) %>
 endsnippet
+
+snippet div "XHTML <div>" w
+<div`!p snip.rv=' id="' if t[1] else ""`${1:name}`!p snip.rv = '"' if t[1] else ""``!p snip.rv=' class="' if t[2] else ""`${2:name}`!p snip.rv = '"' if t[2] else ""`>
+  $0
+</div>
+endsnippet
+
+snippet a "XHTML <a>" w
+<a`!p snip.rv=' id="' if t[1] else ""`${1:name}`!p snip.rv = '"' if t[1] else ""``!p snip.rv=' class="' if t[2] else ""`${2:name}`!p snip.rv = '"' if t[2] else ""`>
+  $0
+</a>
+endsnippet
+
+snippet loading "loading" b
+<%= JST['backbone/templates/loading']() %>
+endsnippet

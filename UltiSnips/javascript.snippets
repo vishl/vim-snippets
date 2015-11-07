@@ -167,9 +167,9 @@ snippet def "define an AMD module"
 define(${1:optional_name, }[${2:'jquery'}], ${3:callback});
 endsnippet
 
-snippet req "require an AMD module"
-require([${1:'dependencies'}], ${2:callback});
-endsnippet
+# snippet req "require an AMD module"
+# require([${1:'dependencies'}], ${2:callback});
+# endsnippet
 
 snippet globals
 /*globals App, Backbone, _, JST, Utils*/
@@ -302,7 +302,7 @@ endsnippet
 snippet Component "React Component" b
 class $1 extends React.Component {
   render(){
-    return(
+    return (
       <View>
         $2
       </View>
@@ -311,20 +311,93 @@ class $1 extends React.Component {
 }
 endsnippet
 
-snippet Component "React Controller" b
-var OrangePage = require('./orange_page');
+snippet Component "Library Component"
+'use strict';
+
+var React = require('react-native');
+var Bridge = require('NativeModules').QTReactBridge;
+var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
+var _ = require('underscore');
+var GS = require('./globalStyles');
+var globalStyles = GS.styles;
+var colors = GS.colors;
+var globals = require('./globals');
+var Models = require('./models');
+
+var {
+  View,
+  // Image,
+  // ListView,
+  // TouchableHighlight,
+} = React;
+
+var styles = React.StyleSheet.create({
+
+});
 
 class $1 extends React.Component {
+  constructor(){
+    super();
+    this.viewName = "$1";
+  }
+
   render(){
-    return(
+    return (
+      <View>
+        
+      </View>
+    );
+  }
+}
+
+module.exports = $1;
+endsnippet
+
+snippet Component "React Controller" b
+'use strict';
+
+var React = require('react-native');
+var Bridge = require('NativeModules').QTReactBridge;
+var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
+var _ = require('underscore');
+var GS = require('${1:.}/globalStyles');
+var globalStyles = GS.styles;
+var colors = GS.colors;
+var globals = require('$1/globals');
+var Models = require('$1/models');
+var OrangePage = require('$1/orange_page');
+var QTController = require('$1/qt_controller.js');
+var QTStyleSheet = require('$1/qt_stylesheet.js');
+
+var {
+  View,
+  // Image,
+  // ListView,
+  // TouchableHighlight,
+} = React;
+
+class $2 extends QTController {
+  constructor(){
+    super();
+    this.viewName = "$2";
+  }
+
+  render(){
+    return (
       <OrangePage>
-        $2
+        $3
       </OrangePage>
     );
   }
 }
 
-module.exports = $1
+var styles = QTStyleSheet.create({
+
+});
+
+
+module.exports = $2;
+
 endsnippet
 
 snippet View "React View"
@@ -337,13 +410,13 @@ style={${1:styles.}}
 endsnippet
 
 snippet T "React Text"
-<GS.QTText>$1</GS.QTText>
+<GS.QTText style={$2}>$1</GS.QTText>
 endsnippet
 snippet R "React Text Regular"
-<GS.QTTextR>$1</GS.QTTextR>
+<GS.QTTextR style={$2}>$1</GS.QTTextR>
 endsnippet
 snippet S "React Text Semibold"
-<GS.QTTextS>$1</GS.QTTextS>
+<GS.QTTextS style={$2}>$1</GS.QTTextS>
 endsnippet
 snippet < "React Tag"
 <${1:View}>
@@ -351,8 +424,7 @@ snippet < "React Tag"
 </$1>
 endsnippet
 snippet <s "React Tag With Style"
-<${1:View}
-  style={$2}>
+<${1:View} style={$2}>
   $3
 </$1>
 endsnippet
@@ -391,4 +463,36 @@ var {
 } = React;
 
 endsnippet
+
+snippet req "require" b
+var `!p
+def formatVariableName(path):
+	lastPart = path.split('/')[-1]
+	if lastPart == 'underscore':
+		return '_'
+	elif lastPart == 'jquery':
+		return '$'
+	else:
+		return re.sub(r'[_\-]', '', lastPart.title())
+snip.rv = formatVariableName(t[1])
+` = require('${1}');$0
+endsnippet
+
+snippet push "React Push" b
+this.props.navigator.push({
+  component: $1,
+  title: '$2',
+  passProps: {$3}
+});
+endsnippet
+
+snippet cen "Center CSS" b
+justifyContent:'center',
+alignItems:'center',
+endsnippet
+
+snippet ibd "Interstitial Button Debounce"
+<InterstitialButtonDebounce mainTitle="$1" secondaryTitle="$2" onPress={(button, enableTap)=>this.tapped(button, enableTap)} />
+endsnippet
+
 # vim:ft=snippets:
